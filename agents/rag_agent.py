@@ -1,16 +1,45 @@
 from langchain_openai import ChatOpenAI
+from langchain.agents import create_agent 
+from dotenv import load_dotenv
 
-from core.settings import settings
+load_dotenv()
 
 
-def create_agent():
+SYSTEM_PROMPT ="""You are an expert Retail banking and wealth advisory assistant 
 
-	llm = ChatOpenAI(
-    	api_key=settings.OPENAI_API_KEY,
-    	model="gpt-5.5",
-    	temperature=0.2
+Provide:
+Perosnailised financial recommendations 
+Product sustainbilty rationale
+Risk warning
+Actionable next steps
+
+Based all recommendations on customers
+-age
+-income
+-risk appetite
+-financial goals
+-excisting investments
+-Liabilities
+
+keep response clear,concise and professional
+
+"""
+
+def create_financial_agent():
+
+	model=ChatOpenAI(
+		model="gpt-5.5",
+		temperature=0.2
 	)
 
-	return llm
+	return create_agent(
+		model=model,
+		system_prompt=SYSTEM_PROMPT,
+    	
+	)
+
+	
+
+
 
 
