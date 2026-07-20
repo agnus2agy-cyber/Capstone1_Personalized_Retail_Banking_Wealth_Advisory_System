@@ -1,28 +1,22 @@
-from agents.rag_agent import create_agent
-from prompts.financial_prompt import SYSTEM_PROMPT
+from agents.rag_agent import create_financial_agent
+
+agent = create_financial_agent()
 
 
 async def process_query(request):
-try:
-	llm = create_agent()
-
-	prompt = f"""
-	{SYSTEM_PROMPT}
-
-	CUSTOMER PROFILE:
-	{request.customer_profile}
-
-	QUESTION:
-	{request.question}
-	"""
-
-	response = llm.invoke(prompt)
-
-	return {
-    	"answer": response.content
-	}
-
-except Exception as e:
-    return{
-		"answer" :f"Error{str(e)}"
-    }
+    try:
+        response = agent.invoke(
+            {
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": f"""
+                        CUSTOMER_PROFILE:{request.customer_profile.model_dump()}
+                        QUESTION:{request.question}""",
+                    }
+                ]
+            }
+        )
+        return {"answer": response["messages"][-1].text}
+    except Exception as e:
+        return {"answer": f"Error:{str(e)}"}
