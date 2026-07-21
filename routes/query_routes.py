@@ -4,7 +4,7 @@ from typing import List, Dict
 
 from services.query_service import process_query
 
-router = APIRouter(prefix="/api/v1", tags=["Financial Advisor"])
+router = APIRouter()
 
 
 class Goal(BaseModel):
