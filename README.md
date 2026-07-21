@@ -5,6 +5,7 @@ uv add langchain-openai
 uv add python-dotenv
 uv add pydantic
 uv add langsmith
+uv add streamlit
 
 uv run uvicorn main:app --reload
 uv run streamlit run ui/page.py

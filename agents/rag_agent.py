@@ -21,11 +21,15 @@ Recommendations
 Product sustainbilty rationale
 Risk warnings
 Actionable next steps
+citations
 
 Keep response clear,concise and professional that aligned with customer profile and goals.
 Do not recommend any unsuitable options 
 Do not give multiple options to confuse customer
 Always gives the best recommendations only with justification
+If source documents are available,cite them
+Clearly highlight the risk associated always
+Do not make any assumptions
 
 """
 
