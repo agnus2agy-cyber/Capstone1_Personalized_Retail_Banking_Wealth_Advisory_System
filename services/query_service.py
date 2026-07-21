@@ -19,4 +19,5 @@ async def process_query(request):
         )
         return {"answer": response["messages"][-1].text}
     except Exception as e:
-        return {"answer": f"Error:{str(e)}"}
+        print("ERROR",e)
+        return {"error": str(e)}
