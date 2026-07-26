@@ -3,6 +3,7 @@
 from fastapi import FastAPI
 
 from routes.query_routes import router as query_router
+from routes.upload_routes import upload_router as upload_router
 
 
 app = FastAPI(
@@ -26,5 +27,6 @@ def health():
 
 
 app.include_router(query_router)
+app.include_router(upload_router)
 
 

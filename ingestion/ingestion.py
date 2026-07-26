@@ -3,7 +3,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 import os
-from code.db import get_vector_store
+from core.db import get_vector_store
 
 load_dotenv()
 
@@ -31,8 +31,8 @@ def ingest_pdf(file_path):
 
     # 3. Chunk
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=512,
-        chunk_overlap=100,
+        chunk_size=2000,
+        chunk_overlap=499,
     )
 
     chunks = splitter.split_documents(docs)
@@ -48,4 +48,4 @@ def ingest_pdf(file_path):
     print("Ingestion Completed")
 
 
-ingest_pdf("data/")
+ingest_pdf("data/Personalized_Retail_Banking_FAQ.pdf")

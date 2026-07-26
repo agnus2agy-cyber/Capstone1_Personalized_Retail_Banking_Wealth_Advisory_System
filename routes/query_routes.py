@@ -31,6 +31,6 @@ class QueryRequest(BaseModel):
     customer_profile: CustomerProfile
 
 
-@router.post("/query")
+@router.post("/query/v1/retail")
 async def get_financial_advice(request: QueryRequest):
     return await process_query(request)

@@ -3,44 +3,13 @@ import psycopg
 import os
 from core.db import get_vector_store
 from psycopg.rows import dict_row
-
+from langchain_core.tools import tool
 
 _raw_conn = os.getenv("PG_CONNECTION_STRING_FTS")
 
 
-_KEYWORD_PATTERNS = [
-    r"[A-Z]{2,}-\d{4}-\w+",  # policy/ticket codes: POL-2024-HR-007
-    r"\b[A-Z]{2,5}\b",  # abbreviations: LTA, CTC, ESI
-    r"\d{6,}",  # long numeric IDs / employee IDs
-    r"\b[A-Z][A-Za-z]+\s+[A-Z]?\d+(?:-[A-Z0-9]+)?[A-Z]*\b",
-]
-
-_KEYWORD_RE = re.compile("|".join(_KEYWORD_PATTERNS))
-
-
-def query_documents(query: str, k: int, collection_name: str = "personal_retail_banking"):
-    print(query)
-
-    # detect the search mode for the query
-    mode = _detect_mode(query)
-    if mode == "fts":
-        # call _search_fts function
-        print("FTS needed")
-        return _search_fts(query, k, collection_name)
-
-    if mode == "vector":
-        # call _search_vector function
-        print("Vector search needed")
-        return _search_vector(query, k, collection_name)
-
-    if mode == "hybrid":
-        # call _search_hybrid function
-        print("Hybrid search needed")
-        return _search_hybrid(query, k, collection_name)
-
-
 def _search_fts(query: str, k: int, collection_name: str):
-    """Keyword search against the stored chunks using Postgres' tsvector/tsquery/ts_rank"""
+    """Search the retail banking knowledge base using full-text keyword search."""
     sql = """
         SELECT
             e.document                                               AS content,
@@ -77,6 +46,7 @@ def _search_fts(query: str, k: int, collection_name: str):
 
 
 def _search_vector(query: str, k: int, collection_name: str):
+    """Search the retail banking knowledge base using semantic similarity."""
     vector_store = get_vector_store(collection_name)
     docs = vector_store.similarity_search(query, k)
 
@@ -92,10 +62,7 @@ def _search_vector(query: str, k: int, collection_name: str):
 
 
 def _search_hybrid(query: str, k: int, collection_name: str):
-    """Merge vector and fts results using RRF (Reciprocal Rank Fusion)
-    Chunks appearing in both search results will rank higher than those in only one
-    The constant 60 prevents top-ranked outputs from dominating
-    How RRF scores for a chunk = sum of 1/(rank + 60)
+    """Search the retail banking knowledge base using hybrid search
     """
     print("Running Hybrid Search")
 
@@ -122,34 +89,33 @@ def _search_hybrid(query: str, k: int, collection_name: str):
 
   
     ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
-    print(ranked)
+    #print(ranked)
     return [chunk_map[key] for key, _ in ranked[:k]]
 
+@tool
+def search_vector(query: str):
+    """Search the retail banking knowledge base using semantic similarity."""
+    return _search_vector(
+        query=query,
+        k=5,
+        collection_name="financial_advisor_support_desk"
+    )
 
-def _detect_mode(query: str):
-    stripped_query = query.strip()
-   
-    if _KEYWORD_RE.search(stripped_query):
-        return "fts"
-
-  
-    if len(stripped_query.split()) <= 3:
-        return "hybrid"
-
-   
-    return "vector"
-
-
-if __name__ == "__main__":
-    
-    query = "Balanced Advantage Fund "
-    results = query_documents(query, k=5)
-
-    print(f"\nTop {len(results)} results for: '{query}'\n{'=' * 60}")
-    for i, item in enumerate(results, 1):
-        metadata = item["metadata"]
-        print(f"""\n[{i}] Source: {metadata.get('source')} | 
-              Page: {metadata.get('page')}""")
-        print(item["content"])
+@tool
+def search_fts(query: str):
+    """Search the retail banking knowledge base using keyword search."""
+    return _search_fts(
+        query=query,
+        k=5,
+        collection_name="financial_advisor_support_desk"
+    )
 
 
+@tool
+def search_hybrid(query: str):
+    """Search the retail banking knowledge base using hybrid search."""
+    return _search_hybrid(
+        query=query,
+        k=5,
+        collection_name="financial_advisor_support_desk"
+    )
