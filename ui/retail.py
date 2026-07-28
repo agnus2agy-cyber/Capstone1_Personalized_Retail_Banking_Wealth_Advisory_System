@@ -121,7 +121,7 @@ with right_col:
 
     st.subheader("Question")
 
-    question = st.text_input("Enter your question")
+    question = st.text_area("Enter your question")
 
 # =====================================================
 # Submit Button
@@ -176,7 +176,7 @@ with right_col:
                 )
 
         if response.status_code == 200:
-            st.success("Advice Generated Successfully")
+            #st.success("Advice Generated Successfully")
             st.write(response.json()["answer"])
         else:
             st.error("Failed to get a response")

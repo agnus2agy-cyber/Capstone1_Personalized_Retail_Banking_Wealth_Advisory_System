@@ -21,7 +21,7 @@ def ingest_pdf(file_path):
             {
                 "source": file_path,
                 "document_extentions": "pdf",
-                "page": doc.metadata.get("page"),
+                "page": doc.metadata.get("page") + 1,
                 "last_updated": os.path.getmtime(file_path),
             }
         )
@@ -31,8 +31,8 @@ def ingest_pdf(file_path):
 
     # 3. Chunk
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=2000,
-        chunk_overlap=499,
+        chunk_size=300,
+        chunk_overlap=75,
     )
 
     chunks = splitter.split_documents(docs)
@@ -48,4 +48,4 @@ def ingest_pdf(file_path):
     print("Ingestion Completed")
 
 
-ingest_pdf("data/Personalized_Retail_Banking_FAQ.pdf")
+#ingest_pdf("data/Personalized_Retail_Banking_FAQ.pdf")
