@@ -15,7 +15,7 @@ def get_embeddings():
     return OpenAIEmbeddings(model=model, dimensions=1536)
 
 
-def get_vector_store(collection_name: str, pre_delete_collection: bool = True):
+def get_vector_store(collection_name: str, pre_delete_collection: bool = False):
     return PGVector(
         collection_name=collection_name,
         connection=PG_CONNECTION,
