@@ -3,7 +3,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 import os
-from code.db import get_vector_store
+from core.db import get_vector_store
 
 load_dotenv()
 
@@ -21,7 +21,7 @@ def ingest_pdf(file_path):
             {
                 "source": file_path,
                 "document_extentions": "pdf",
-                "page": doc.metadata.get("page"),
+                "page": doc.metadata.get("page") + 1,
                 "last_updated": os.path.getmtime(file_path),
             }
         )
@@ -31,8 +31,8 @@ def ingest_pdf(file_path):
 
     # 3. Chunk
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=512,
-        chunk_overlap=100,
+        chunk_size=300,
+        chunk_overlap=75,
     )
 
     chunks = splitter.split_documents(docs)
@@ -47,5 +47,3 @@ def ingest_pdf(file_path):
     # 6. Save the embeddings into vector DB
     print("Ingestion Completed")
 
-
-ingest_pdf("data/")
