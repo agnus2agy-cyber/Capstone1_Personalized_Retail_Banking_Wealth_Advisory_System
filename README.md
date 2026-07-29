@@ -8,7 +8,7 @@ uv add langsmith
 uv add streamlit
 
 uv run uvicorn main:app --reload
-uv run streamlit run ui/page.py
+uv run streamlit run ui/retail.py
 
 
 http://localhost:8501/
