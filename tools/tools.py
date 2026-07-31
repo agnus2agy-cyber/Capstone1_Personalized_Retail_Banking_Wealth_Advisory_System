@@ -41,7 +41,7 @@ def _search_fts(query: str, k: int, collection_name: str):
         for row in rows
     ]
 
-
+    print("Running FTS search...")
     return output
 
 
@@ -57,7 +57,7 @@ def _search_vector(query: str, k: int, collection_name: str):
         }
         for doc in docs
     ]
-
+    print("Running vector search...")
     return output
 
 
@@ -89,7 +89,6 @@ def _search_hybrid(query: str, k: int, collection_name: str):
 
   
     ranked = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)
-    print(ranked)
     return [chunk_map[key] for key, _ in ranked[:k]]
 
 @tool
