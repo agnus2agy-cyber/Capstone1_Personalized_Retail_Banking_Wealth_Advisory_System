@@ -26,13 +26,10 @@ def ingest_pdf(file_path):
             }
         )
 
-    print(docs)
-    print("before chucking")
-
     # 3. Chunk
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=300,
-        chunk_overlap=75,
+        chunk_size=512,
+        chunk_overlap=100,
     )
 
     chunks = splitter.split_documents(docs)
